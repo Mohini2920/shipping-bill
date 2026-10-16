@@ -1,3 +1,4 @@
+import { MockScenarioPicker } from '@/shipping-bills/components/mock-scenario-picker'
 import { DarkModeToggle } from 'ui/basic/dark-mode'
 
 interface ApplicationLayoutProps {
@@ -8,7 +9,8 @@ interface ApplicationLayoutProps {
 export function ApplicationLayout({ children, maxWidth }: ApplicationLayoutProps) {
   return (
     <div className="foreground relative isolate flex min-h-svh w-full flex-col">
-      <header className="flex items-center justify-end px-4 py-2 print:hidden">
+      <header className="flex items-center justify-end gap-4 px-4 py-2 print:hidden">
+        <MockScenarioPicker />
         <DarkModeToggle />
       </header>
 

@@ -7,8 +7,18 @@ const homeWrapper = <ApplicationLayout />
 
 export const routeObjects: RouteObject[] = [
   Route(routes.dashboard, <ListDashboard />, 'Shipping Bills', homeWrapper),
-  Route('/shipping-bills/new', () => import('@/shipping-bills/shipping-bill-form'), 'New Shipping Bill', homeWrapper),
-  Route('/shipping-bills/:id', () => import('@/shipping-bills/shipping-bill-form'), 'Shipping Bill', homeWrapper),
+  Route(
+    routes.shippingBillNew,
+    () => import('@/shipping-bills/pages/shipping-bill-page'),
+    'New Shipping Bill',
+    homeWrapper
+  ),
+  Route(
+    routes.shippingBillEdit,
+    () => import('@/shipping-bills/pages/shipping-bill-page'),
+    'Shipping Bill',
+    homeWrapper
+  ),
   // Misc
   Route('*', () => import('core/components/404-page'), 'Not Found')
 ]
