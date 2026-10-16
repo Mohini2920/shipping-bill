@@ -21,7 +21,7 @@ import { Select } from 'ui/inputs/select'
 import { Popover, PopoverContent, PopoverTrigger } from 'ui/interactive/popover'
 import { PopoverContext } from 'ui/interactive/popover-context'
 import { Tabs, TabsList, TabsTrigger } from 'ui/interactive/tabs'
-import { clsx, getContext } from 'ui/utils'
+import { clsx, clsxJoin, getContext } from 'ui/utils'
 import { getDemoData, saveBill, useDemoData } from './demo-store'
 import { getMarksAndNumbersOptions, MarksAndNumbersOption } from './marks-and-numbers-source'
 import {
@@ -275,7 +275,7 @@ function AsyncPartySelect({
       <input type="hidden" name={name} value={value ?? ''} ref={ref} disabled={disabled} />
       <Popover placement="bottom-start" fallbackPlacements={['top-start']} onOpenCallback={(open) => setIsOpen(open)}>
         <PopoverTrigger
-          className={clsx(
+          className={clsxJoin(
             'outline-focus-select group flex w-full cursor-pointer items-center justify-between rounded border border-gray-200 pr-2 hover:border-gray-300 disabled:cursor-not-allowed disabled:opacity-50',
             className || 'bg-white',
             disabled && 'cursor-not-allowed opacity-50'
@@ -288,7 +288,7 @@ function AsyncPartySelect({
           </div>
           <RrCaretDown className="size-4 text-gray-400 transition-transform group-data-[state=open]:rotate-180" />
         </PopoverTrigger>
-        <InputError name={name} />
+        <InputError<Record<string, unknown>> name={name} />
         <PopoverContent className="overflow-hidden rounded-md border border-gray-200 bg-white shadow-lg">
           <div className="border-b border-gray-100 p-2">
             <input
@@ -1260,10 +1260,6 @@ function BillEditor({ bill }: { bill?: SavedBill }) {
       setValue(`invoices.${quickAdd.invoiceIndex}.${field}BranchId`, String(branchId), { shouldValidate: true })
     }
   }
-
-  const exporter = exporters.find((item) => String(item.id) === values.exporterId)
-  const consignee = businesses.find((item) => String(item.id) === values.consigneeId)
-  const totalLines = values.invoices.reduce((sum, invoice) => sum + invoice.items.length, 0)
 
   return (
     <div className="space-y-5">
