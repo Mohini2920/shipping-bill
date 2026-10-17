@@ -95,11 +95,14 @@ The form keeps its tabs, fields and flows. These differences are intentional:
 
 ### AI Usage & Approach
 
+- ### AI Usage & Approach
+
 - **Tools:** Claude (Anthropic) in an agentic coding session with shell access to a local clone.
-- **How it was used:** reading the starter code and the fe-zen-arch internals (form schema lookup, `Form` retry and disable behaviour, `core/request`), proposing a plan, writing the refactor in small commits, and running checks.
-- **My judgment:** I reviewed the plan and the domain and service-contract code before they were applied, chose to keep a real HTTP implementation behind a flag, and asked to keep the scope to the assignment's requirements.
+- **How I used it:** to read the starter code and the fe-zen-arch internals (form schema lookup, `Form` retry and disable behaviour, `core/request`), propose a refactoring plan, write the refactor in small commits, and run checks.
+- **My judgment:** I reviewed the plan and the domain and service-contract code before they were applied, chose to keep a real HTTP implementation behind a flag, and kept the scope to the assignment's requirements.
 - **Validation:** `tsc` (0 errors; the starter had 6), `pnpm lint-check` (0 errors; the starter had 162 eslint errors), `pnpm build`, and 25 headless-browser checks with Playwright run outside the repo (no dependency added). The checks covered required fields, cross-field rules, drafts, submit, quick-add dialogs, double submit and every mock scenario.
 - **Findings during validation:** each bug was reproduced before it was fixed.
   - The decimal-input bug was reproduced on the original code.
   - A dialog form rendered in a portal still bubbles its React submit event to the outer form, so the dialog stops propagation.
   - A final review found that saving before the marks-and-numbers options loaded erased the saved mark, because react-hook-form leaves disabled fields out of submitted values. It also found that errors inside a collapsed section stayed hidden. Both are fixed and covered by browser checks.
+- **Learnings:** keeping every data call behind one service interface made the mock easy to swap and easy to fail on purpose; react-hook-form drops disabled and unmounted fields from submitted values, which matters for conditional fields; and AI output needed running and checking, since two of the bugs above only showed up in the browser.
