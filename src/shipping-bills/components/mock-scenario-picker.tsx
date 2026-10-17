@@ -1,7 +1,6 @@
 import { queryClient } from 'core/react-query'
 import { useState } from 'react'
-import { usesMockBillApi } from '../api'
-import { getMockScenario, MockScenario, mockScenarios, setMockScenario } from '../mock/mock-network'
+import { getMockScenario, MockScenario, mockScenarios, setMockScenario, usesMockBillApi } from '../api'
 
 /**
  * Lets a reviewer switch the mock backend between normal, slow, empty and failing behaviour to see

@@ -1,3 +1,5 @@
+import { getFormContext } from 'core/form'
+import { useEffect, useRef } from 'react'
 import { Button } from 'ui/basic/button'
 
 // Small layout pieces shared by the shipping bill sections.
@@ -17,10 +19,36 @@ interface CollapsibleProps {
   defaultOpen?: boolean
 }
 
-/** Optional, less common fields. Content stays mounted while collapsed, so it is still validated. */
+function errorAt(errors: object, path: string) {
+  return path
+    .split('.')
+    .reduce<unknown>((node, key) => (node == null ? undefined : (node as Record<string, unknown>)[key]), errors)
+}
+
+/**
+ * Optional, less common fields. Content stays mounted while collapsed, so it is still validated.
+ * When validation finds a new error inside a closed section, the section opens so its message shows.
+ */
 export function Collapsible({ title, children, defaultOpen }: CollapsibleProps) {
+  const ref = useRef<HTMLDetailsElement>(null)
+  const lastInvalid = useRef('')
+  const { errors } = getFormContext().hooks.formState
+
+  // Runs after every render, since react-hook-form may update the errors object in place.
+  // It only opens the section when the set of invalid fields inside it changes, so a section the
+  // user closes on purpose stays closed.
+  useEffect(() => {
+    const details = ref.current
+    if (details == null) return
+    const invalid = Array.from(details.querySelectorAll('[name]'), (field) => field.getAttribute('name') ?? '')
+      .filter((name) => errorAt(errors, name) != null)
+      .join(',')
+    if (invalid !== '' && invalid !== lastInvalid.current) details.open = true
+    lastInvalid.current = invalid
+  })
+
   return (
-    <details className="rounded-lg border p-4" open={defaultOpen}>
+    <details ref={ref} className="rounded-lg border p-4" open={defaultOpen}>
       <summary className="cursor-pointer text-sm font-medium">{title}</summary>
       <div className="mt-4">{children}</div>
     </details>

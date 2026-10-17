@@ -18,3 +18,8 @@ export const partyService: PartyService = mockPartyService
 export const referenceDataService: ReferenceDataService = mockReferenceDataService
 
 export type { PartyService, ReferenceDataService, ShippingBillService } from './types'
+
+// Developer controls for the mock backend (the header's Mock API picker). Exposed here so that
+// UI code still never imports from mock/ directly.
+export { getMockScenario, mockScenarios, setMockScenario } from '../mock/mock-network'
+export type { MockScenario } from '../mock/mock-network'

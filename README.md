@@ -75,6 +75,17 @@ Mock data is stored in localStorage (`shipping-bill-mock-db-v1`). Delete that ke
 - A branch is required once its party is chosen. Third parties are optional.
 - Numbers are entered in text inputs. Browser number inputs reject decimals without a `step` attribute, which fe-zen-arch's `Input` does not expose; in the original form this silently blocked saving a price like 3.831.
 
+### Behaviour changes from the starter
+
+The form keeps its tabs, fields and flows. These differences are intentional:
+
+- Bills created in the form now appear in the list. The starter saved them to one store and listed another.
+- The seed data is 4 complete bills instead of 22 list-only rows, which opened as empty forms because they had no party ids.
+- The buyer and third-party pickers list buyers and third parties. The starter listed consignees in both.
+- **Save & next** validates the current tab before saving a draft. **Previous** only switches tab and no longer saves.
+- The dashboard's "Sync from API" button is now "Refresh". It reloads the list through the bill service.
+- About 30 fields with no input anywhere in the form were removed from the types.
+
 ### Notes
 
 - `core`, `ui`, `auth`, `icons` are fe-zen-arch workspace packages, aliased via tsconfig paths and vite aliases. The submodule is not modified.
@@ -87,5 +98,8 @@ Mock data is stored in localStorage (`shipping-bill-mock-db-v1`). Delete that ke
 - **Tools:** Claude (Anthropic) in an agentic coding session with shell access to a local clone.
 - **How it was used:** reading the starter code and the fe-zen-arch internals (form schema lookup, `Form` retry and disable behaviour, `core/request`), proposing a plan, writing the refactor in small commits, and running checks.
 - **My judgment:** I reviewed the plan and the domain and service-contract code before they were applied, chose to keep a real HTTP implementation behind a flag, and asked to keep the scope to the assignment's requirements.
-- **Validation:** `tsc` (0 errors; the starter had 6), `pnpm lint-check` (0 errors; the starter had 162 eslint errors), `pnpm build`, and 23 headless-browser checks with Playwright run outside the repo (no dependency added). The checks covered required fields, cross-field rules, drafts, submit, quick-add dialogs, double submit and every mock scenario.
-- **Findings during validation:** the decimal-input bug above was reproduced on the original code before fixing it. A dialog form rendered in a portal still bubbles its React submit event to the outer form, so the dialog stops propagation.
+- **Validation:** `tsc` (0 errors; the starter had 6), `pnpm lint-check` (0 errors; the starter had 162 eslint errors), `pnpm build`, and 25 headless-browser checks with Playwright run outside the repo (no dependency added). The checks covered required fields, cross-field rules, drafts, submit, quick-add dialogs, double submit and every mock scenario.
+- **Findings during validation:** each bug was reproduced before it was fixed.
+  - The decimal-input bug was reproduced on the original code.
+  - A dialog form rendered in a portal still bubbles its React submit event to the outer form, so the dialog stops propagation.
+  - A final review found that saving before the marks-and-numbers options loaded erased the saved mark, because react-hook-form leaves disabled fields out of submitted values. It also found that errors inside a collapsed section stayed hidden. Both are fixed and covered by browser checks.

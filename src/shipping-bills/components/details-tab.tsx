@@ -144,7 +144,7 @@ export function DetailsTab() {
 /** Shipping marks depend on the exporter, so they load whenever the exporter changes. */
 function MarksAndNumbersSelect() {
   const { control } = useBillForm()
-  const exporterId = useWatch({ control, name: 'exporterId' })
+  const [exporterId, savedMark] = useWatch({ control, name: ['exporterId', 'marksAndNumbers'] })
   const marks = useQuery({
     queryKey: queryKeys.marksAndNumbers(Number(exporterId)),
     queryFn: () => referenceDataService.getMarksAndNumbers(Number(exporterId)),
@@ -163,7 +163,9 @@ function MarksAndNumbersSelect() {
       name="marksAndNumbers"
       options={marks.data ?? []}
       placeholder={placeholder}
-      disabled={!marks.data?.length}
+      // react-hook-form leaves disabled fields out of the saved values, so a field that already
+      // holds a mark stays enabled while the options load; otherwise a quick save would erase it.
+      disabled={exporterId === '' || (!marks.data?.length && !savedMark)}
       wrapClass="sm:col-span-3"
     />
   )
